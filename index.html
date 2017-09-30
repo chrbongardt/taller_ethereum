@@ -1,0 +1,85 @@
+<html> 
+
+<head>
+    <title>Taller ethereum</title>
+</head>
+
+<body>
+    
+    <h1 id="title"></h1>
+    <div id="wall">
+
+    </div>
+
+
+    <script src="bower_components/web3/dist/web3.min.js"></script>
+
+    <script type="text/javascript">
+    
+        window.addEventListener('load', function() {
+            getWeb3(startApp);
+        });
+
+        var Blog;
+        var BlogApp = {
+            getPosts: function(){
+                Blog.getPostCount.call(function(e,postCount){
+                    document.getElementById('wall').innerHTML = '';
+                    if(e) console.error(e);                    
+                    else for (var i = 0; i < postCount; i++){
+                        Blog.getPostAtIndex.call(i,function(e,post){
+                            if(e) console.error(e);
+                            else{
+                                var postElement = document.createElement('p');
+                                postElement.innerText = post[0]+' publicado por '+post[1]+' en el bloque '+post[2]+' a las '+new Date(post[3]*1000);
+                                document.getElementById('wall').appendChild(postElement);                                
+                            }
+                        });
+                    }
+                });
+            },
+            getTitle: function(){
+                Blog.describe.call(function(e,title){
+                    if(e) console.error(e);
+                    else{
+                        document.getElementById('title').innerText = title;
+                    }
+                })
+            },
+            post: function(content,callback){
+                Blog.post(content,function(e){
+                    if(e) {
+                        console.error(e);
+                        callback(false);
+                    }else callback(true);
+                });
+            }
+
+        };
+
+        function getWeb3(callback) {
+
+            if (typeof window.web3 === 'undefined') {
+                console.error("No metamask");
+                callback(new Web3(new Web3.providers.HttpProvider("http://localhost:8545")));
+            } else {                
+                var myWeb3 = new Web3(window.web3.currentProvider); 
+                myWeb3.eth.defaultAccount = window.web3.eth.defaultAccount;
+                callback(myWeb3);
+            }
+        }
+
+        function startApp(web3){
+            Blog = web3.eth.contract(
+                [{"constant":true,"inputs":[],"name":"describe","outputs":[{"name":"_title","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"content","type":"string"}],"name":"post","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getPostCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"index","type":"uint256"}],"name":"getPostAtIndex","outputs":[{"name":"message","type":"string"},{"name":"owner","type":"address"},{"name":"blockNumber","type":"uint256"},{"name":"timeStamp","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_title","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]
+            ).at(
+                '0x85891a053759bA3B01e274579e326B3e2462d610'
+            );                
+        }
+
+
+
+    </script>
+</body>
+
+</html>

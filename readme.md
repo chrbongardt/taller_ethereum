@@ -23,7 +23,7 @@ Launch test RPC with predefined account
 _____
 
 ```
-testrpc --account="0xaa73b5c98e60d589e71ce7cff59c02f82e12c7ce676ee356da8e058a285ccd61,0xFFFFFFFFFFFFFFFFFF"
+node_modules/.bin/testrpc --account="0xaa73b5c98e60d589e71ce7cff59c02f82e12c7ce676ee356da8e058a285ccd61,0xFFFFFFFFFFFFFFFFFF" 
 ```
 
 Launch MIST and use local rpc client
